@@ -35,6 +35,7 @@ const STICK_DEADZONE = 0.18; // منطقة ميتة دائرية — تمنع ا
 // تعرض handedness وgamepad.axes وgamepad.buttons لكل يد (أو من الطرفية:
 // window.XRDev.vrDebug(true)). مطفأة افتراضياً — لا طباعة لكل إطار.
 const VR_DEBUG = new URLSearchParams(window.location.search).has("vrdebug");
+const VR_BUILD = "locomotion-2026-09-22b"; // يظهر في لوحة التشخيص للتأكد من تحميل النسخة الجديدة
 
 // لوحة المعلومات ثلاثية الأبعاد
 const PANEL_WIDTH = 1.5; // متر
@@ -566,11 +567,14 @@ export function initVR(ctx) {
       c.fillText(text, 12, y);
       y += 24;
     };
+    line(`build ${VR_BUILD}  moves=${moveCount}`, "#ffd479");
+    if (lastError) line(`ERR: ${lastError}`.slice(0, 60), "#ff7b7b");
     line(`dolly x=${dolly.position.x.toFixed(2)} y=${dolly.position.y.toFixed(2)} z=${dolly.position.z.toFixed(2)} yaw=${((dolly.rotation.y * 180) / Math.PI).toFixed(0)}°`, "#9fe0ff");
     camera.getWorldPosition(headPos);
     line(`head  x=${headPos.x.toFixed(2)} y=${headPos.y.toFixed(2)} z=${headPos.z.toFixed(2)} walkable=${isWalkable(headPos.x, headPos.z)}`, "#9fe0ff");
     line(`refSpace=${renderer.xr.getReferenceSpace() ? currentRefType : "?"}  sources=${session.inputSources.length}`, "#9fe0ff");
-    for (const source of session.inputSources) {
+    for (let si = 0; si < session.inputSources.length; si++) {
+      const source = session.inputSources[si];
       const pad = source.gamepad;
       y += 6;
       line(`[${source.handedness}] ${source.profiles[0] || ""} map=${pad ? pad.mapping || "-" : "no gamepad"}`, "#86f7d3");
@@ -601,8 +605,26 @@ export function initVR(ctx) {
   // بعد بدء الجلسة ننتظر وصول أول وضعية تتبع حقيقية للرأس، ثم نضع الرأس
   // فوق نقطة البداية (أصل local-floor في Quest ليس بالضرورة تحت الرأس).
   let alignFrames = 0;
+  let moveCount = 0; // عدد إطارات الحركة الفعلية (يظهر في لوحة التشخيص)
+  let lastError = "";
+
+  /** ينفّذ جزءاً من الإطار؛ الخطأ يُسجَّل ويُعرض ولا يوقف الحركة ولا العرض. */
+  function guard(fn) {
+    try {
+      fn();
+    } catch (error) {
+      const msg = String((error && error.message) || error);
+      if (msg !== lastError) console.warn("[vr.js]", error);
+      lastError = msg;
+      debug.enabled = true; // أظهر اللوحة تلقائياً عند أول خطأ
+    }
+  }
 
   function update(delta) {
+    guard(() => updateFrame(delta));
+  }
+
+  function updateFrame(delta) {
     const session = renderer.xr.getSession();
     if (!session) return;
 
@@ -612,9 +634,11 @@ export function initVR(ctx) {
       if (alignFrames === 0) alignHeadToSpawn();
     }
 
-    if (frameCount % 2 === 0) updateRayFeedback();
-    if (teleport.active) updateTeleportMarker();
-    if (debug.enabled) updateDebug(session, delta);
+    guard(() => {
+      if (frameCount % 2 === 0) updateRayFeedback();
+      if (teleport.active) updateTeleportMarker();
+    });
+    if (debug.enabled) guard(() => updateDebug(session, delta));
 
     // قراءة وحدات التحكم من XRSession.inputSources مباشرة (لا لوحة مفاتيح
     // داخل النظارة): اليسرى = الحركة، اليمنى = الدوران. وحدة بلا handedness
@@ -623,7 +647,9 @@ export function initVR(ctx) {
     let moveY = 0;
     let turnX = 0;
     let hasMover = false;
-    for (const source of session.inputSources) {
+    const sources = session.inputSources;
+    for (let si = 0; si < sources.length; si++) {
+      const source = sources[si];
       const pad = source.gamepad;
       if (!pad || !pad.axes || pad.axes.length < 2) continue;
       readStick(pad, stick);
@@ -668,6 +694,7 @@ export function initVR(ctx) {
       headPos.x += dx;
     }
     if (canMoveHead(0, dz)) dolly.position.z += dz;
+    moveCount += 1;
   }
 
   // -------------------------------------------------------------------
@@ -724,7 +751,7 @@ export function initVR(ctx) {
 
   /** سطر واحد في الطرفية عند كل تغيّر في وحدات التحكم (لا طباعة لكل إطار). */
   function logInputSources(session) {
-    const list = Array.from(session.inputSources, (s) => {
+    const list = Array.prototype.map.call(session.inputSources, (s) => {
       const pad = s.gamepad;
       return `${s.handedness}:${s.profiles[0] || "?"}${pad ? ` axes=${pad.axes.length} buttons=${pad.buttons.length} map=${pad.mapping || "-"}` : " (no gamepad)"}`;
     });

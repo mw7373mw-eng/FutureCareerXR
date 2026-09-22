@@ -33,7 +33,7 @@ import {
 } from "./assets.js";
 // وضع الواقع الافتراضي (WebXR) — طبقة إضافية لا تمسّ تجربة سطح المكتب.
 // ?v= يكسر ذاكرة متصفح Quest المؤقتة حتى لا يُحمَّل إصدار قديم من vr.js.
-import { initVR } from "./vr.js?v=20260922";
+import { initVR } from "./vr.js?v=20260922b";
 // أداة دمج الهندسات الثابتة (تقليل عدد نداءات الرسم) — من حزمة three الرسمية.
 import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 
@@ -1582,18 +1582,25 @@ function animate() {
   // والكاميرا يقودها الجهاز. بقية المشهد (الأبواب، الجسيمات، المرافق سعود)
   // يعمل كما هو في الوضعين.
   if (renderer.xr.isPresenting) {
-    vr.update(delta);
+    vr.update(delta); // محمية داخلياً — خطأ فيها لا يوقف عرض الإطار
   } else {
     updateMovement(delta);
   }
 
-  animateDoors(delta);
-  animateParticles(delta);
-  ledPulse(delta);
-  adaptiveQualityTick(delta);
-  updateRoomLabel();
-  updateBillboards();
-  updateAriaCompanion(delta);
+  // أي خطأ في تحديثات المشهد لا يجوز أن يمنع عرض الإطار — داخل النظارة
+  // يعني ذلك صورة «مجمّدة» يتحرك فيها الرأس فقط ولا يمكن التنقل.
+  try {
+    animateDoors(delta);
+    animateParticles(delta);
+    ledPulse(delta);
+    adaptiveQualityTick(delta);
+    updateRoomLabel();
+    updateBillboards();
+    updateAriaCompanion(delta);
+  } catch (error) {
+    if (!animate.warned) console.warn("[script.js] خطأ في حلقة التحريك:", error);
+    animate.warned = true;
+  }
 
   renderer.render(scene, camera);
 }
