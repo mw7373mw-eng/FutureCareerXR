@@ -1,0 +1,1209 @@
+/* =============================================================
+   Fututor VR — ورقة الأنماط
+   الاتجاه الفني: مستوحى من Apple Vision Pro — بساطة ونظافة،
+   لمسات نيون زرقاء على زجاج أبيض ضبابي، زوايا دائرية، وانتقالات ناعمة.
+
+   ملاحظة RTL: الصفحة كاملة باتجاه من اليمين إلى اليسار (dir="rtl"
+   في index.html)، لذلك تُستخدم الخصائص المنطقية (inset-inline-start/end،
+   padding-inline، margin-inline) حتى تنقلب الواجهة تلقائياً وبشكل صحيح.
+   ============================================================= */
+
+:root {
+  --bg-void: #05070d;
+  --glass-white: rgba(255, 255, 255, 0.62);
+  --glass-white-strong: rgba(255, 255, 255, 0.82);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --neon-blue: #3ea6ff;
+  --neon-blue-strong: #0a84ff;
+  --neon-blue-glow: rgba(10, 132, 255, 0.55);
+  --ink: #0b1220;
+  --ink-soft: #4a5568;
+  --radius-lg: 28px;
+  --radius-md: 18px;
+  --radius-sm: 12px;
+  /* خطوط عربية: Cairo للعناوين، Tajawal للنصوص */
+  /* سلسلة خطوط تنتهي دائماً بخطوط عربية حقيقية من النظام (ويندوز/ماك/
+     لينكس) قبل sans-serif العامة — فإن تعذّر تحميل خطوط Google (عرض بلا
+     إنترنت مثلاً) يبقى النص العربي بخط عربي سليم، ولا يلجأ المتصفح إلى
+     خط بديل قد يعرض محارف غير صحيحة. */
+  --font-display: 'Cairo', 'Tajawal', 'Segoe UI', 'Noto Naskh Arabic', 'Geeza Pro', 'Traditional Arabic', Tahoma, sans-serif;
+  --font-body: 'Tajawal', 'Cairo', 'Segoe UI', 'Noto Naskh Arabic', 'Geeza Pro', Tahoma, sans-serif;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg-void);
+  font-family: var(--font-body);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+.hidden { display: none !important; }
+
+/* =============================================================
+   شاشة التحميل
+   ============================================================= */
+#loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  background:
+    radial-gradient(circle at 50% 40%, rgba(62, 166, 255, 0.18), transparent 60%),
+    linear-gradient(180deg, #05070d 0%, #060a14 100%);
+  color: #eaf3ff;
+  animation: fadeIn 0.6s var(--ease);
+}
+
+.loading-logo {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.6rem, 4vw, 2.6rem);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: pulseGlow 2.4s ease-in-out infinite;
+}
+
+.logo-bracket { color: var(--neon-blue); opacity: 0.8; }
+.logo-text strong { color: var(--neon-blue); font-weight: 800; }
+
+.loading-bar-track {
+  width: min(360px, 70vw);
+  height: 4px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+#loading-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--neon-blue), #9ad7ff);
+  box-shadow: 0 0 12px var(--neon-blue-glow);
+  transition: width 0.25s ease-out;
+}
+
+#loading-status {
+  font-size: 0.95rem;
+  color: rgba(234, 243, 255, 0.6);
+}
+
+@keyframes pulseGlow {
+  0%, 100% { text-shadow: 0 0 18px rgba(62, 166, 255, 0.25); }
+  50% { text-shadow: 0 0 32px rgba(62, 166, 255, 0.55); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* =============================================================
+   شاشة البدء
+   ============================================================= */
+#start-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(5, 7, 13, 0.55);
+  backdrop-filter: blur(6px);
+}
+
+.start-card {
+  max-width: 500px;
+  padding: 40px 44px;
+  text-align: center;
+  background: var(--glass-white);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(24px) saturate(160%);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.6);
+  animation: floatIn 0.7s var(--ease);
+}
+
+.start-card h1 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.7rem;
+  margin: 0 0 12px;
+  color: var(--ink);
+}
+.start-card h1 span { color: var(--neon-blue-strong); }
+.start-card p {
+  font-size: 1rem;
+  color: var(--ink-soft);
+  line-height: 1.8; /* ارتفاع سطر أعلى قليلاً يناسب قراءة النص العربي */
+  margin-bottom: 24px;
+}
+
+@keyframes floatIn {
+  /* أُزيل scale(0.98): تحجيم كسري أثناء الحركة يرسم النص على شبكة غير
+     صحيحة فيظهر ضبابياً لحظة الفتح (وقد تبقى الطبقة المركّبة ضبابية إن
+     قُوطعت الحركة). الانزلاق الرأسي وحده يعطي نفس الإحساس بلا ضبابية. */
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* =============================================================
+   الأزرار (مشتركة)
+   ============================================================= */
+.primary-btn, #start-btn {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 13px 28px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--neon-blue-strong), #56b8ff);
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 8px 24px var(--neon-blue-glow);
+  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+.primary-btn:hover, #start-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px var(--neon-blue-glow);
+}
+.primary-btn:active, #start-btn:active { transform: translateY(0); }
+
+.secondary-btn {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 12px 24px;
+  margin-inline-start: 10px; /* خاصية منطقية — تنقلب تلقائياً مع RTL */
+  border: 1px solid rgba(11, 18, 32, 0.15);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.5);
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.2s var(--ease);
+}
+.secondary-btn:hover { background: rgba(255,255,255,0.8); }
+
+/* =============================================================
+   واجهة العرض (HUD)
+   ============================================================= */
+#hud {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  font-family: var(--font-body);
+}
+
+#hud-top {
+  position: absolute;
+  top: 20px;
+  inset-inline: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#hud-logo {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  color: white;
+  background: rgba(10, 15, 25, 0.35);
+  border: 1px solid rgba(255,255,255,0.15);
+  padding: 8px 16px;
+  border-radius: 999px;
+  backdrop-filter: blur(10px);
+}
+#hud-logo strong { color: var(--neon-blue); }
+
+#hud-room-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(255,255,255,0.85);
+  background: rgba(10, 15, 25, 0.35);
+  border: 1px solid rgba(255,255,255,0.15);
+  padding: 8px 16px;
+  border-radius: 999px;
+  backdrop-filter: blur(10px);
+}
+
+#hud-crosshair {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: var(--neon-blue);
+  box-shadow: 0 0 10px var(--neon-blue-glow);
+  opacity: 0.85;
+}
+
+#hud-controls-hint {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 18px;
+  background: rgba(10, 15, 25, 0.4);
+  border: 1px solid rgba(255,255,255,0.15);
+  padding: 10px 22px;
+  border-radius: 999px;
+  backdrop-filter: blur(10px);
+  color: rgba(255,255,255,0.75);
+  font-size: 0.85rem;
+}
+#hud-controls-hint strong { color: white; }
+
+#mute-btn {
+  position: absolute;
+  bottom: 20px;
+  inset-inline-end: 24px; /* يظهر يساراً في واجهة RTL */
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(10, 15, 25, 0.4);
+  backdrop-filter: blur(10px);
+  color: white;
+  font-size: 1.1rem;
+  cursor: pointer;
+  pointer-events: all;
+}
+
+/* زر "العودة للبهو" — مخرج مضمون من أي غرفة في أي لحظة */
+#exit-room-btn {
+  position: absolute;
+  bottom: 20px;
+  inset-inline-end: 78px; /* يسار زر كتم الصوت في واجهة RTL */
+  height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(63, 125, 255, 0.35);
+  background: rgba(10, 15, 25, 0.4);
+  backdrop-filter: blur(10px);
+  color: white;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  pointer-events: all;
+  transition: all 0.18s var(--ease);
+}
+#exit-room-btn:hover {
+  background: var(--neon-blue-strong);
+  border-color: var(--neon-blue-strong);
+}
+
+/* صف إدخال المحادثة الحرة مع «آريا» (يظهر عند نقر المرافق ثلاثي الأبعاد) */
+#aria-chat-input-row {
+  margin-top: 14px;
+  display: flex;
+  gap: 8px;
+}
+#aria-chat-input {
+  flex: 1;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(10, 132, 255, 0.3);
+  background: rgba(6, 10, 20, 0.5);
+  color: var(--ink);
+  pointer-events: all;
+}
+#aria-chat-input:focus { outline: none; border-color: var(--neon-blue-strong); }
+#aria-chat-send-btn {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 9px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(10, 132, 255, 0.3);
+  background: var(--neon-blue-strong);
+  color: white;
+  cursor: pointer;
+  pointer-events: all;
+  white-space: nowrap;
+}
+#aria-chat-send-btn:disabled { opacity: 0.5; cursor: default; }
+
+/* =============================================================
+   «آريا» — المساعد الذكي: الهولوغرام وصندوق الحوار
+   ============================================================= */
+#aria-panel {
+  position: fixed;
+  bottom: 100px;
+  /* إصلاح: التوسيط السابق كان left:50% + translateX(-50%). حين يكون عرض
+     العنصر (92vw) رقماً فردياً ينتج إزاحة بنصف بكسل، فيُرسم النص على شبكة
+     كسرية ويبدو ضبابياً — وهو سبب الضبابية «المتقطعة» التي تظهر أحياناً
+     وتختفي أحياناً حسب عرض النافذة. التوسيط بالهوامش يقع دائماً على بكسل
+     صحيح ولا يُنشئ طبقة تركيب. */
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+  gap: 18px;
+  width: min(640px, 92vw);
+  animation: floatIn 0.5s var(--ease);
+}
+
+#aria-hologram {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: hologramFloat 3.2s ease-in-out infinite;
+}
+
+.aria-core {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #cdeaff, var(--neon-blue) 60%, #0a5bb8 100%);
+  box-shadow: 0 0 24px var(--neon-blue-glow), 0 0 60px rgba(10,132,255,0.35);
+}
+
+.aria-ring {
+  position: absolute;
+  border: 1.5px solid rgba(62, 166, 255, 0.55);
+  border-radius: 50%;
+  animation: ringPulse 2.6s ease-out infinite;
+}
+.ring-1 { width: 50px; height: 50px; animation-delay: 0s; }
+.ring-2 { width: 66px; height: 66px; animation-delay: 0.6s; }
+.ring-3 { width: 84px; height: 84px; animation-delay: 1.2s; }
+
+@keyframes ringPulse {
+  0% { opacity: 0.7; transform: scale(0.7); }
+  100% { opacity: 0; transform: scale(1.3); }
+}
+@keyframes hologramFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+#aria-dialogue-box {
+  flex: 1;
+  background: var(--glass-white-strong);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 18px 22px;
+  backdrop-filter: blur(18px) saturate(150%);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.7);
+}
+
+#aria-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--neon-blue-strong);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#aria-mode-badge {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+  background: rgba(11,18,32,0.08);
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+#aria-bubble p {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--ink);
+  min-height: 1.7em;
+}
+
+#aria-options {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.aria-option-btn {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 9px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(10, 132, 255, 0.3);
+  background: rgba(10, 132, 255, 0.08);
+  color: var(--neon-blue-strong);
+  cursor: pointer;
+  transition: all 0.18s var(--ease);
+  pointer-events: all;
+}
+.aria-option-btn:hover {
+  background: var(--neon-blue-strong);
+  color: white;
+  transform: translateY(-1px);
+}
+
+#aria-close-btn {
+  position: absolute;
+  top: -10px;
+  inset-inline-end: -10px; /* في RTL يظهر أعلى اليسار */
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--glass-border);
+  background: white;
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 1rem;
+  pointer-events: all;
+}
+
+#aria-reopen-btn {
+  position: fixed;
+  bottom: 24px;
+  inset-inline-start: 24px; /* يظهر يميناً في واجهة RTL */
+  z-index: 190;
+  padding: 12px 20px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(10, 15, 25, 0.55);
+  backdrop-filter: blur(12px);
+  color: white;
+  font-family: var(--font-body);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* =============================================================
+   النوافذ المنبثقة (مشتركة)
+   ============================================================= */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* إصلاح حاسم: أُزيل من هنا مرشّح تشويش الخلفية الزجاجي، لأنه كان يطبّق
+     ضبابية حقيقية على كل ما خلف النافذة — ومنه لوحة «سعود» — فيبدو نصها
+     ضبابياً كلما فُتحت النافذة والمساعد نشط معاً. استُبدل بتعتيم لوني
+     فقط: نفس أثر التركيز البصري، بلا أي تشويش على نصوص اللوحات الأخرى،
+     وأخف على وحدة الرسم أيضاً. */
+  background: rgba(5, 7, 13, 0.68);
+  animation: fadeIn 0.25s var(--ease);
+}
+
+.modal-content {
+  position: relative;
+  max-width: 720px;
+  width: 90vw;
+  max-height: 84vh;
+  overflow-y: auto;
+  background: var(--glass-white-strong);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(18px) saturate(150%);
+  box-shadow: 0 24px 70px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.7);
+  padding: 36px 40px;
+  animation: floatIn 0.35s var(--ease);
+  text-align: right; /* محاذاة النص العربي داخل النوافذ */
+}
+
+.modal-close {
+  position: absolute;
+  top: 18px;
+  inset-inline-end: 18px; /* في RTL يظهر بزاوية اليسار العليا */
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(11,18,32,0.06);
+  color: var(--ink);
+  font-size: 1rem;
+  cursor: pointer;
+}
+.modal-close:hover { background: rgba(11,18,32,0.12); }
+
+.rec-badge, .object-eyebrow {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--neon-blue-strong);
+  background: rgba(10,132,255,0.1);
+  padding: 5px 12px;
+  border-radius: 999px;
+  margin-bottom: 14px;
+}
+
+.modal-content h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.6rem;
+  margin: 0 0 14px;
+  color: var(--ink);
+}
+
+.rec-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin: 20px 0 28px;
+}
+.rec-columns h3 {
+  font-size: 1rem;
+  margin-bottom: 8px;
+  color: var(--ink);
+}
+/* padding-inline-start بدل padding-left حتى تُزاح القائمة من اليمين في RTL */
+.rec-columns ul { margin: 0; padding-inline-start: 18px; color: var(--ink-soft); font-size: 0.95rem; line-height: 1.8; }
+
+/* نافذة معلومات الجسم */
+.object-modal-media {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, #0a1120, #16233d);
+  aspect-ratio: 16/7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* object-fit: cover يحافظ على نسبة أبعاد الصورة تلقائياً مهما كان مقاسها */
+.object-modal-media img { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; }
+.video-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: rgba(255,255,255,0.75);
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 0 30px;
+  background: rgba(6,10,20,0.35);
+}
+.play-icon {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 1.1rem;
+}
+
+.object-section { margin-bottom: 16px; }
+.object-section h4 {
+  margin: 0 0 4px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--neon-blue-strong);
+}
+.object-section p { margin: 0; color: var(--ink-soft); line-height: 1.8; font-size: 1rem; }
+
+.pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.pill-row span {
+  background: rgba(11,18,32,0.06);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  color: var(--ink);
+}
+
+#perspective-points {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+#perspective-points li {
+  /* الإزاحة والنقطة المضيئة من جهة البداية (اليمين في RTL) */
+  padding-inline-start: 22px;
+  position: relative;
+  font-size: 1rem;
+  color: var(--ink-soft);
+  line-height: 1.8;
+}
+#perspective-points li::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 0;
+  top: 10px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--neon-blue-strong);
+  box-shadow: 0 0 8px var(--neon-blue-glow);
+}
+
+/* أقسام الجامعات السعودية الموصى بها داخل نافذة «الرؤية المستقبلية» */
+#perspective-universities-section {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(11,18,32,0.08);
+}
+#perspective-universities-section h3 {
+  margin: 0 0 12px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--neon-blue-strong);
+}
+#perspective-universities {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.university-card {
+  background: rgba(11,18,32,0.05);
+  border: 1px solid rgba(11,18,32,0.08);
+  border-radius: 12px;
+  padding: 12px 16px;
+}
+.university-card .university-name {
+  font-weight: 700;
+  color: var(--ink);
+  font-size: 0.98rem;
+}
+.university-card .university-college {
+  font-size: 0.85rem;
+  color: var(--neon-blue-strong);
+  margin-inline-start: 8px;
+}
+.university-card .university-why {
+  margin: 4px 0 0;
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  line-height: 1.7;
+}
+
+/* =============================================================
+   حاوية المشهد
+   ============================================================= */
+#scene-container {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+}
+#scene-container canvas { display: block; }
+
+/* =============================================================
+   التجاوب مع الشاشات الصغيرة
+   ============================================================= */
+@media (max-width: 720px) {
+  .rec-columns { grid-template-columns: 1fr; }
+  #hud-controls-hint { display: none; }
+  #aria-hologram { width: 60px; height: 60px; }
+  .modal-content { padding: 26px 22px; }
+}
+
+/* =========================================================================
+   معرض صور المعروض (شرائح تلقائية) + قراءة الوصف صوتياً بالعربية
+   إضافات جديدة فقط — لا تعديل على أي قاعدة قائمة أعلاه.
+   ========================================================================= */
+
+/* --- معرض الصور داخل بطاقة المعروض --- */
+#object-gallery {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* طبقتا صور متراكبتان للتلاشي السلس بين الشرائح */
+#object-gallery img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.7s ease-in-out;
+}
+#object-gallery img.is-active { opacity: 0.95; }
+
+/* شريط التعليق أسفل الصورة (يشرح ما تعرضه الشريحة) */
+#object-gallery-caption {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  padding: 26px 16px 10px;
+  font-family: "Tajawal", "Cairo", sans-serif;
+  font-size: 0.85rem;
+  color: #eaf2ff;
+  text-align: center;
+  background: linear-gradient(to top, rgba(4, 8, 18, 0.9), rgba(4, 8, 18, 0));
+  pointer-events: none;
+}
+
+/* أزرار التنقل بين الصور (السابق / التالي) */
+.gallery-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(160, 200, 255, 0.35);
+  border-radius: 50%;
+  background: rgba(8, 16, 32, 0.55);
+  color: #dbe8ff;
+  font-size: 1.15rem;
+  line-height: 1;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.gallery-nav:hover { background: rgba(62, 166, 255, 0.45); }
+#gallery-prev-btn { inset-inline-start: 10px; }
+#gallery-next-btn { inset-inline-end: 10px; }
+
+/* زر إيقاف/متابعة العرض التلقائي */
+.gallery-play {
+  position: absolute;
+  top: 10px;
+  inset-inline-end: 10px;
+  padding: 4px 9px;
+  border: 1px solid rgba(160, 200, 255, 0.35);
+  border-radius: 999px;
+  background: rgba(8, 16, 32, 0.6);
+  color: #dbe8ff;
+  font-size: 0.8rem;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+}
+.gallery-play:hover { background: rgba(62, 166, 255, 0.45); }
+
+/* نقاط تدل على الشريحة الحالية */
+#object-gallery-dots {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 8px;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+#object-gallery-dots button {
+  width: 7px;
+  height: 7px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+#object-gallery-dots button.is-active {
+  background: var(--neon, #3ea6ff);
+  transform: scale(1.35);
+}
+
+/* --- شريط قراءة الوصف صوتياً --- */
+#narration-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 18px;
+}
+.narrate-main-btn {
+  padding: 9px 16px;
+  border: 1px solid rgba(62, 166, 255, 0.55);
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(62, 166, 255, 0.22), rgba(124, 140, 255, 0.22));
+  color: #eaf2ff;
+  font-family: "Cairo", sans-serif;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+.narrate-main-btn:hover { background: rgba(62, 166, 255, 0.4); transform: translateY(-1px); }
+.narrate-main-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.narrate-ctrl-btn {
+  padding: 7px 13px;
+  border: 1px solid rgba(160, 200, 255, 0.3);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #dbe8ff;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.narrate-ctrl-btn:hover { background: rgba(255, 255, 255, 0.14); }
+.narrate-ctrl-btn[hidden] { display: none; }
+
+#narration-status {
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.8rem;
+  color: rgba(220, 232, 255, 0.65);
+}
+
+/* تظليل الجملة الجاري نطقها */
+.tts-sentence { transition: background 0.25s ease, color 0.25s ease; border-radius: 4px; }
+.tts-sentence.is-speaking {
+  background: rgba(62, 166, 255, 0.28);
+  color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(62, 166, 255, 0.28);
+}
+
+/* =========================================================================
+   زر الدخول إلى الواقع الافتراضي (WebXR) — يظهر فقط على الأجهزة الداعمة
+   ========================================================================= */
+#vr-enter-btn {
+  position: fixed;
+  bottom: 22px;
+  inset-inline-start: 22px;
+  z-index: 60;
+  padding: 11px 20px;
+  border: 1px solid rgba(62, 166, 255, 0.6);
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(62, 166, 255, 0.28), rgba(124, 140, 255, 0.28));
+  color: #eaf2ff;
+  font-family: "Cairo", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.35);
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+#vr-enter-btn:hover { background: rgba(62, 166, 255, 0.45); transform: translateY(-1px); }
+#vr-enter-btn[hidden] { display: none; }
+
+/* داخل جلسة الواقع الافتراضي: طبقات HTML لا تُعرض أصلاً — نخفيها صراحةً
+   حتى لا تظهر خلف الجلسة على شاشة الجهاز (Mirror view). */
+body.in-vr #hud,
+body.in-vr #aria-panel,
+body.in-vr #aria-reopen-btn,
+body.in-vr .modal { display: none !important; }
+
+/* تنبيه تعطل تسريع الرسوميات (يظهر فقط عند اكتشاف العرض البرمجي) */
+#gpu-warning {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  max-width: 640px;
+  padding: 12px 18px;
+  border: 1px solid rgba(255, 180, 60, 0.7);
+  border-radius: 12px;
+  background: rgba(40, 26, 6, 0.94);
+  color: #ffe3b0;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  text-align: center;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* =========================================================================
+   البوصلة المهنية — شريط التقدم وأعمدة نسب التوافق
+   ========================================================================= */
+.compass-progress {
+  width: 100%;
+  height: 7px;
+  margin-bottom: 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+.compass-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #3ea6ff, #7c8cff);
+  transition: width 0.35s ease;
+}
+.compass-start-btn { font-weight: 700; }
+
+.compass-results { display: flex; flex-direction: column; gap: 8px; margin: 6px 0 12px; }
+.compass-bar-row { display: flex; align-items: center; gap: 8px; font-family: "Tajawal", sans-serif; font-size: 0.86rem; }
+.compass-bar-label { flex: 0 0 34%; color: #dbe8ff; }
+.compass-bar-row.is-top .compass-bar-label { color: #9fe0ff; font-weight: 700; }
+.compass-bar-track { flex: 1; height: 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.12); overflow: hidden; }
+.compass-bar-fill { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, #3ea6ff, #36e0c8); transition: width 0.6s ease; }
+.compass-bar-row.is-top .compass-bar-fill { background: linear-gradient(90deg, #3ea6ff, #8a5cff); }
+.compass-bar-value { flex: 0 0 3.2em; text-align: left; color: #eaf2ff; font-weight: 700; }
+
+#rec-matches { margin: 10px 0 16px; display: flex; flex-direction: column; gap: 8px; }
+
+/* زر قراءة إجابة سعود صوتياً (في رأس اللوحة بجوار زر الإغلاق) */
+#aria-speak-btn {
+  width: 34px;
+  height: 34px;
+  margin-inline-end: 6px;
+  border: 1px solid rgba(62, 166, 255, 0.5);
+  border-radius: 50%;
+  background: rgba(62, 166, 255, 0.15);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+#aria-speak-btn:hover { background: rgba(62, 166, 255, 0.35); transform: scale(1.06); }
+#aria-speak-btn[hidden] { display: none; }
+
+/* =========================================================================
+   إحصاءات المسار بعد البوصلة (وظائف/رواتب + مناطق + شركات)
+   بطاقات كحلية داكنة عالية التباين داخل نافذة النتيجة الفاتحة —
+   بنفس روح الصورة المرجعية.
+   ========================================================================= */
+#rec-stats { margin: 6px 0 22px; display: flex; flex-direction: column; gap: 14px; }
+
+.stat-card {
+  background: linear-gradient(180deg, #0d1526 0%, #0a1120 100%);
+  border: 1px solid rgba(120, 160, 220, 0.18);
+  border-radius: 16px;
+  padding: 18px 20px;
+  color: #eef3fb;
+}
+.stat-card h3 {
+  margin: 0 0 14px;
+  font-size: 1.02rem;
+  color: #ffffff;
+}
+.stat-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 14px; }
+
+/* جدول الوظائف والرواتب */
+.stat-row {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr 0.8fr;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 4px;
+  border-bottom: 1px solid rgba(140, 170, 220, 0.12);
+  font-size: 0.92rem;
+}
+.stat-row:last-child { border-bottom: none; }
+.stat-head { color: #9db4d8; font-size: 0.84rem; border-bottom-color: rgba(140, 170, 220, 0.28); }
+.stat-job { font-weight: 700; color: #ffffff; }
+.stat-salary { color: #dfe8f6; direction: ltr; text-align: end; font-variant-numeric: tabular-nums; }
+.stat-head .stat-salary { direction: rtl; text-align: start; color: #9db4d8; }
+.stat-demand { text-align: start; }
+
+.stat-pill {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(160, 190, 235, 0.35);
+  background: rgba(120, 155, 210, 0.14);
+  color: #e8f0fc;
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+.stat-pill-hot {
+  border-color: rgba(120, 220, 180, 0.5);
+  background: rgba(52, 190, 140, 0.18);
+  color: #a9f5d8;
+}
+
+/* أشرطة المناطق */
+.stat-region { margin-bottom: 12px; }
+.stat-region-head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+  color: #f2f6fc;
+}
+.stat-region-head b { color: #7fd4ff; }
+.stat-region-track {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(140, 170, 220, 0.16);
+  overflow: hidden;
+}
+.stat-region-track span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #34b8ff, #7c8cff);
+}
+.stat-footnote { margin-top: 6px; font-size: 0.82rem; color: #9db4d8; }
+.stat-footnote b { color: #7fd4ff; }
+
+/* شرائح الشركات */
+.stat-chips { display: flex; flex-wrap: wrap; gap: 9px; }
+.stat-chip {
+  padding: 8px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(160, 190, 235, 0.3);
+  background: rgba(120, 155, 210, 0.12);
+  color: #ffffff;
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+.stat-disclaimer { font-size: 0.78rem; color: #6b7a94; text-align: center; }
+
+@media (max-width: 640px) {
+  .stat-grid { grid-template-columns: 1fr; }
+  .stat-row { grid-template-columns: 1.2fr 1fr 1fr; }
+  .stat-demand { display: none; }
+}
+
+/* =========================================================================
+   إصلاح تباين أعمدة نسب التوافق:
+   كانت مصممة لخلفية داكنة (لوحة سعود) بينما نافذة النتيجة فاتحة —
+   فكانت النصوص الفاتحة شبه مختفية. ألوان صريحة عالية التباين للسياقين.
+   ========================================================================= */
+/* داخل نافذة النتيجة الفاتحة: نص داكن ومسار واضح وتعبئة مشبعة */
+#recommendation-modal .compass-bar-label { color: #1a2740; font-weight: 600; }
+#recommendation-modal .compass-bar-row.is-top .compass-bar-label { color: #0a5bd3; font-weight: 800; }
+#recommendation-modal .compass-bar-value { color: #0e1a30; }
+#recommendation-modal .compass-bar-track {
+  background: rgba(20, 40, 80, 0.14);
+  border: 1px solid rgba(20, 40, 80, 0.12);
+}
+#recommendation-modal .compass-bar-fill { background: linear-gradient(90deg, #1f8fff, #0a5bd3); }
+#recommendation-modal .compass-bar-row.is-top .compass-bar-fill { background: linear-gradient(90deg, #14b8a6, #0a5bd3); }
+
+/* داخل لوحة سعود الداكنة: تقوية الألوان الفاتحة القائمة */
+#aria-panel .compass-bar-label { color: #f0f6ff; }
+#aria-panel .compass-bar-value { color: #ffffff; }
+#aria-panel .compass-bar-track { background: rgba(255, 255, 255, 0.22); }
+
+
+/* =========================================================================
+   ثبات عرض النصوص — إصلاحات الوضوح والتباين
+   ========================================================================= */
+
+/* تنعيم موحد للخطوط + رسم النص على شبكة بكسل صحيحة */
+body,
+#aria-panel,
+.modal,
+.modal-content {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* عند فتح أي نافذة: توقف الضبابية الزجاجية للوحة «سعود» خلفها.
+   السبب: تراكم مرشّحَي backdrop-filter كبيرين (اللوحة + النافذة) يرهق
+   وحدة الرسم وقد يُنتج تشوهاً في النص على بعض البطاقات. اللوحة خلف طبقة
+   تعتيم أصلاً فلا فرق بصري يُذكر، والنص يبقى حاداً تماماً. */
+body.modal-open #aria-dialogue-box {
+  backdrop-filter: none;
+  background: rgba(12, 18, 32, 0.92);
+}
+
+/* بعد انتهاء حركة الدخول لا تبقَ أي طبقة تركيب على حاويات النصوص —
+   يضمن رسم النص بدقة الشاشة الكاملة لا بدقة الطبقة المركّبة. */
+.modal-content,
+#aria-panel {
+  will-change: auto;
+  backface-visibility: hidden;
+}
+
+/* اتجاه وخط موحدان لكل نصوص الواجهة (يمنع تبديل الخط تلقائياً إلى خط
+   بديل قد يعرض محارف غريبة) */
+#aria-panel,
+#aria-text,
+.aria-option-btn,
+.modal-content,
+.compass-bar-label,
+.stat-card {
+  font-family: var(--font-body);
+  direction: rtl;
+  text-align: start;
+}
+
+/* =========================================================================
+   أدوات التحكم باللمس (تظهر على الأجهزة اللمسية فقط)
+   ========================================================================= */
+#touch-stick {
+  position: fixed;
+  bottom: 34px;
+  inset-inline-start: 28px;
+  width: 130px;
+  height: 130px;
+  z-index: 120;
+  border-radius: 50%;
+  background: rgba(10, 20, 38, 0.35);
+  border: 2px solid rgba(160, 200, 255, 0.45);
+  backdrop-filter: blur(4px);
+  touch-action: none;          /* يمنع تمرير الصفحة أثناء استخدام العصا */
+  -webkit-user-select: none;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+#touch-stick.is-active {
+  background: rgba(62, 166, 255, 0.28);
+  border-color: rgba(120, 210, 255, 0.85);
+}
+#touch-stick-knob {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #eaf4ff, #7fc4ff);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+  transition: transform 0.06s linear;
+}
+
+#touch-hint {
+  position: fixed;
+  bottom: 178px;
+  inset-inline: 16px;
+  z-index: 120;
+  padding: 9px 14px;
+  border-radius: 12px;
+  background: rgba(8, 14, 26, 0.78);
+  border: 1px solid rgba(160, 200, 255, 0.3);
+  color: #eaf2ff;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.82rem;
+  text-align: center;
+  pointer-events: none;
+  transition: opacity 0.8s ease;
+}
+#touch-hint.is-faded { opacity: 0; }
+
+/* على الشاشات اللمسية: تلميح لوحة المفاتيح لا معنى له */
+@media (hover: none) and (pointer: coarse) {
+  #hud-controls-hint { display: none; }
+}
+
+
+/* أزرار شاشة البدء: الرحلة الجامعية (رئيسي) + دخول المعرض (ثانوي) */
+#start-journey-btn {
+  display: block; width: 100%; margin: 0 0 12px; padding: 15px 24px;
+  border: none; border-radius: 14px; cursor: pointer;
+  font-family: "Tajawal", sans-serif; font-weight: 700; font-size: 1.1rem;
+  background: linear-gradient(90deg, #34d6c8, #3ea6ff); color: #041018;
+}
+#start-journey-btn:hover { filter: brightness(1.08); }
+.start-secondary {
+  background: rgba(255,255,255,0.08) !important; color: #cfe0f5 !important;
+  font-weight: 500 !important; font-size: 0.95rem !important;
+}

@@ -1,0 +1,935 @@
+{
+  "major": {
+    "id": "kfu-ee",
+    "name_en": "Electrical Engineering",
+    "name_ar": "الهندسة الكهربائية",
+    "institution_en": "King Faisal University",
+    "institution_ar": "جامعة الملك فيصل",
+    "reward_room": "renewable_energy",
+    "branches": [
+      {
+        "id": "power",
+        "name_ar": "مسار الطاقة والقوى",
+        "name_en": "Power & Energy",
+        "reward_room": "renewable_energy",
+        "status": "live"
+      },
+      {
+        "id": "control",
+        "name_ar": "مسار التحكم والأتمتة",
+        "name_en": "Control & Automation",
+        "status": "coming_soon"
+      },
+      {
+        "id": "comms",
+        "name_ar": "مسار الاتصالات",
+        "name_en": "Communications",
+        "status": "coming_soon"
+      }
+    ]
+  },
+  "courses": [
+    {
+      "code": "MATH144",
+      "title_en": "Calculus I",
+      "title_ar": "التفاضل والتكامل ١",
+      "credits": 4,
+      "year": 1,
+      "semester": 1,
+      "spine": true,
+      "category": "foundation",
+      "prereqs": [],
+      "unlocks": [
+        "MATH145",
+        "PHYS140"
+      ],
+      "pitch_ar": "الرياضيات التي تتيح لك التنبؤ بمستقبل أي شيء يتحرك أو يتغيّر.",
+      "pitch_en": "The math that lets you predict the future of anything that changes.",
+      "skills_ar": [
+        "نمذجة التغيّر",
+        "إيجاد الحد الأقصى والأدنى",
+        "قراءة المنحنيات"
+      ],
+      "vr_pattern": "P7_plot",
+      "question": {
+        "stem_ar": "التفاضل والتكامل هو رياضيات ____ ولهذا يقوم عليه كل ما بعده.",
+        "stem_en": "Calculus is the math of ____ — the reason it underlies every later course.",
+        "options_ar": [
+          "التغيّر",
+          "الأشكال",
+          "المال",
+          "التاريخ"
+        ],
+        "options_en": [
+          "change",
+          "shapes",
+          "money",
+          "history"
+        ],
+        "answer": 0,
+        "why_ar": "الهندسة تدرس كيف تتغيّر الأشياء عبر الزمن."
+      }
+    },
+    {
+      "code": "MATH145",
+      "title_en": "Calculus II",
+      "title_ar": "التفاضل والتكامل ٢",
+      "credits": 4,
+      "year": 1,
+      "semester": 2,
+      "spine": true,
+      "category": "foundation",
+      "prereqs": [
+        "MATH144"
+      ],
+      "unlocks": [
+        "MATH215",
+        "MATH240",
+        "MATH244",
+        "CS204"
+      ],
+      "pitch_ar": "كيف يجمع المهندسون مليون قطعة صغيرة للوصول إلى إجابة واحدة دقيقة.",
+      "pitch_en": "How engineers add up a million tiny pieces to get one exact answer.",
+      "skills_ar": [
+        "التكامل والتراكم",
+        "متسلسلات تايلور",
+        "المتجهات"
+      ],
+      "vr_pattern": "P7_plot",
+      "question": {
+        "stem_ar": "أي فكرة من التكامل ٢ تتيح للرقاقة تقريب الجيب وجيب التمام؟",
+        "stem_en": "Which idea from Calc II lets a chip approximate sine & cosine?",
+        "options_ar": [
+          "متسلسلات تايلور",
+          "الكسور",
+          "المصفوفات",
+          "اللوغاريتمات"
+        ],
+        "options_en": [
+          "Taylor series",
+          "fractions",
+          "matrices",
+          "logarithms"
+        ],
+        "answer": 0,
+        "why_ar": "المتسلسلات تقرّب الدوال الصعبة بمجاميع بسيطة."
+      }
+    },
+    {
+      "code": "PHYS140",
+      "title_en": "General Physics I",
+      "title_ar": "فيزياء عامة ١",
+      "credits": 3,
+      "year": 1,
+      "semester": 1,
+      "spine": true,
+      "category": "foundation",
+      "prereqs": [],
+      "unlocks": [
+        "PHYS141",
+        "ENGR223",
+        "ENGR303"
+      ],
+      "pitch_ar": "فيزياء كل ما يدفع أو يدور أو يطير — وسبب ثقة المهندس أن الجسر لن يسقط.",
+      "pitch_en": "The physics of everything that pushes, spins, or flies.",
+      "skills_ar": [
+        "التفكير بالقوى والطاقة",
+        "مخططات الجسم الحر",
+        "تحويل الواقع إلى معادلات"
+      ],
+      "vr_pattern": "P2_wire",
+      "question": {
+        "stem_ar": "تمنحك فيزياء ١ لغة ____ التي تُعاد لاحقاً في الطاقة والآلات.",
+        "stem_en": "Physics I gives you the language of ____, reused later in energy and machines.",
+        "options_ar": [
+          "الحركة والطاقة",
+          "الألوان",
+          "الأسعار",
+          "القواعد النحوية"
+        ],
+        "options_en": [
+          "motion & energy",
+          "colors",
+          "prices",
+          "grammar"
+        ],
+        "answer": 0,
+        "why_ar": "حفظ الطاقة يعود في الدوائر والقدرة."
+      }
+    },
+    {
+      "code": "PHYS141",
+      "title_en": "General Physics II",
+      "title_ar": "فيزياء عامة ٢",
+      "credits": 3,
+      "year": 1,
+      "semester": 2,
+      "spine": true,
+      "category": "foundation",
+      "prereqs": [
+        "PHYS140"
+      ],
+      "unlocks": [
+        "EE241",
+        "ENGR223"
+      ],
+      "pitch_ar": "حيث تتعلّم أخيراً ما هي الكهرباء حقاً — ولماذا يضيء مغناطيس متحرك مدينة كاملة.",
+      "pitch_en": "Where you finally learn what electricity really is.",
+      "skills_ar": [
+        "التفكير بالمجالات",
+        "قوانين كيرشوف",
+        "كيف تعمل المحركات والمولدات"
+      ],
+      "vr_pattern": "P2_wire",
+      "question": {
+        "stem_ar": "أي مادة تفتحها فيزياء ٢ مباشرة — أول مادة كهربائية حقاً؟",
+        "stem_en": "Which course does Physics II directly unlock — the first truly electrical one?",
+        "options_ar": [
+          "EE241 دوائر كهربائية ١",
+          "الإنجليزية ٢",
+          "الكيمياء",
+          "الرسم الهندسي"
+        ],
+        "options_en": [
+          "EE241 Circuits I",
+          "English II",
+          "Chemistry",
+          "Graphics"
+        ],
+        "answer": 0,
+        "why_ar": "الشحنة وقوانين كيرشوف هي بوابة الدوائر."
+      }
+    },
+    {
+      "code": "EE241",
+      "title_en": "Electric Circuits I",
+      "title_ar": "دوائر كهربائية ١",
+      "credits": 3,
+      "year": 2,
+      "semester": 3,
+      "spine": true,
+      "category": "core",
+      "prereqs": [
+        "PHYS141"
+      ],
+      "unlocks": [
+        "EE242",
+        "EE243",
+        "EE247"
+      ],
+      "pitch_ar": "أول مرة تصمّم فيها شيئاً حقيقياً — الدائرة داخل الشاحن والسماعة وجهاز مراقبة نبض القلب.",
+      "pitch_en": "The first time you design something real — the circuit inside a charger.",
+      "skills_ar": [
+        "تحليل أي شبكة مقاومات",
+        "تبسيط الدوائر (ثيفنن/نورتن)",
+        "التنبؤ بالاستجابة اللحظية"
+      ],
+      "vr_pattern": "P2_wire",
+      "question": {
+        "stem_ar": "دوائر ١ هي أساس أي مادة لاحقة؟",
+        "stem_en": "Circuits I is the foundation of which later course?",
+        "options_ar": [
+          "EE242 دوائر كهربائية ٢",
+          "الخطابة",
+          "الاقتصاد",
+          "الثقافة الإسلامية"
+        ],
+        "options_en": [
+          "EE242 Circuits II",
+          "Speech",
+          "Economics",
+          "Islamic Culture"
+        ],
+        "answer": 0,
+        "why_ar": "الجذع الكهربائي كله ينمو من دوائر ١."
+      }
+    },
+    {
+      "code": "EE242",
+      "title_en": "Electric Circuits II",
+      "title_ar": "دوائر كهربائية ٢",
+      "credits": 3,
+      "year": 2,
+      "semester": 4,
+      "spine": true,
+      "category": "core",
+      "prereqs": [
+        "EE241"
+      ],
+      "unlocks": [
+        "EE330",
+        "EE331",
+        "EE335",
+        "EE244"
+      ],
+      "pitch_ar": "كيف تتصرّف كهرباء الجدار فعلاً — وكيف يطوّعها المهندس لتشغيل مبنى كامل بأمان.",
+      "pitch_en": "How the electricity in your walls really behaves.",
+      "skills_ar": [
+        "تحليل التيار المتردد",
+        "تصميم المرشّحات",
+        "تحويل لابلاس"
+      ],
+      "vr_pattern": "P7_plot",
+      "question": {
+        "stem_ar": "قدرة الطور الثلاثي من دوائر ٢ أساسية لأي مجال؟",
+        "stem_en": "Three-phase power from Circuits II is essential for which field?",
+        "options_ar": [
+          "EE335 أنظمة القوى",
+          "الإنجليزية",
+          "الرسم",
+          "الكيمياء"
+        ],
+        "options_en": [
+          "EE335 Power Systems",
+          "English",
+          "Graphics",
+          "Chemistry"
+        ],
+        "answer": 0,
+        "why_ar": "الطور الثلاثي يغذّي أنظمة القوى مباشرة."
+      }
+    },
+    {
+      "code": "EE243",
+      "title_en": "Electronics I",
+      "title_ar": "إلكترونيات ١",
+      "credits": 3,
+      "year": 2,
+      "semester": 4,
+      "spine": true,
+      "category": "core",
+      "prereqs": [
+        "EE241"
+      ],
+      "unlocks": [
+        "EE244",
+        "EE248"
+      ],
+      "pitch_ar": "تعرّف على الترانزستور — المفتاح الذي عدده على الأرض أكبر من عدد نجوم المجرّة، وستتعلّم التصميم به.",
+      "pitch_en": "Meet the transistor — you'll learn to design with it.",
+      "skills_ar": [
+        "تصميم مضخّم",
+        "بناء المفتاح الرقمي",
+        "تحويل التيار المتردد إلى مستمر"
+      ],
+      "vr_pattern": "P4_beforeafter",
+      "question": {
+        "stem_ar": "الترانزستور الذي تقابله هنا هو أساساً ____ صغير.",
+        "stem_en": "The transistor you meet here is basically a tiny ____.",
+        "options_ar": [
+          "مفتاح/مضخّم",
+          "بطارية",
+          "مغناطيس",
+          "محرك"
+        ],
+        "options_en": [
+          "switch/amplifier",
+          "battery",
+          "magnet",
+          "motor"
+        ],
+        "answer": 0,
+        "why_ar": "الترانزستور جسر من التماثلي إلى الرقمي."
+      }
+    },
+    {
+      "code": "EE231",
+      "title_en": "Digital Logic Design",
+      "title_ar": "تصميم المنطق الرقمي",
+      "credits": 3,
+      "year": 2,
+      "semester": 3,
+      "spine": true,
+      "category": "core",
+      "prereqs": [
+        "MATH145"
+      ],
+      "unlocks": [
+        "EE233",
+        "EE434"
+      ],
+      "pitch_ar": "ابنِ دماغاً من مفاتيح — بوابات المنطق نفسها الموجودة داخل كل رقاقة حاسوب صُنعت.",
+      "pitch_en": "Build a brain from switches — the logic gates inside every chip.",
+      "skills_ar": [
+        "التصميم من جدول الحقيقة",
+        "بناء الذاكرة والعدّادات",
+        "التفكير بالأصفار والآحاد"
+      ],
+      "vr_pattern": "P3_nodes",
+      "question": {
+        "stem_ar": "المنطق الرقمي شرط أساسي يجعل أي مادة ممكنة؟",
+        "stem_en": "Digital Logic is the prerequisite that makes which course possible?",
+        "options_ar": [
+          "EE233 المعالجات الدقيقة",
+          "الموائع الحرارية",
+          "الخطابة",
+          "علم المواد"
+        ],
+        "options_en": [
+          "EE233 Microprocessors",
+          "Thermo-Fluids",
+          "Speech",
+          "Materials"
+        ],
+        "answer": 0,
+        "why_ar": "البوابات تبني الحاسوب الذي ستبرمجه."
+      }
+    },
+    {
+      "code": "EE330",
+      "title_en": "Signals & Systems",
+      "title_ar": "الإشارات والأنظمة",
+      "credits": 3,
+      "year": 3,
+      "semester": 5,
+      "spine": true,
+      "category": "core",
+      "prereqs": [
+        "MATH215",
+        "MATH240",
+        "EE242"
+      ],
+      "unlocks": [
+        "EE332",
+        "EE430",
+        "EE434"
+      ],
+      "pitch_ar": "السر الذي تشترك فيه سماعات عزل الضجيج وشازام وأجهزة الرنين — تحويل أي صوت إلى رياضيات يمكن تعديلها.",
+      "pitch_en": "The secret noise-cancelling headphones, Shazam & MRI all share.",
+      "skills_ar": [
+        "تفكيك أي إشارة إلى ترددات",
+        "ترشيح الضجيج",
+        "الرياضيات وراء الصوت والصورة"
+      ],
+      "vr_pattern": "P7_plot",
+      "question": {
+        "stem_ar": "الإشارات والأنظمة هي الأصل المشترك لأي فرعين؟",
+        "stem_en": "Signals & Systems is the shared parent of which TWO branches?",
+        "options_ar": [
+          "الاتصالات والتحكم",
+          "الكيمياء والإنجليزية",
+          "الرياضة والموسيقى",
+          "الاقتصاد والقانون"
+        ],
+        "options_en": [
+          "Communications & Control",
+          "Chemistry & English",
+          "Sports & Music",
+          "Economics & Law"
+        ],
+        "answer": 0,
+        "why_ar": "الفرعان الكبيران في التخصص ينبتان من هنا."
+      }
+    },
+    {
+      "code": "EE331",
+      "title_en": "Engineering Electromagnetics",
+      "title_ar": "الكهرومغناطيسية الهندسية",
+      "credits": 3,
+      "year": 3,
+      "semester": 5,
+      "spine": true,
+      "category": "core",
+      "prereqs": [
+        "MATH244",
+        "EE242"
+      ],
+      "unlocks": [
+        "EE335",
+        "EE493"
+      ],
+      "pitch_ar": "كيف يتحدث هاتفك مع البرج بلا شيء بينهما — المعادلات الأربع التي تصف الضوء والراديو والواي فاي كلها.",
+      "pitch_en": "How your phone talks to a tower with nothing in between.",
+      "skills_ar": [
+        "تحليل المجالات",
+        "كيف تشعّ الهوائيات",
+        "التفكير بالموجات"
+      ],
+      "vr_pattern": "P2_wire",
+      "question": {
+        "stem_ar": "تفسّر الكهرومغناطيسية كيف يصل هاتفك إلى البرج و____ بينهما.",
+        "stem_en": "Electromagnetics explains how your phone reaches a tower with ____ in between.",
+        "options_ar": [
+          "لا شيء / فراغ",
+          "أسلاك",
+          "ماء",
+          "قضبان"
+        ],
+        "options_en": [
+          "nothing / empty space",
+          "wires",
+          "water",
+          "rails"
+        ],
+        "answer": 0,
+        "why_ar": "الموجات تنتقل عبر الفراغ."
+      }
+    },
+    {
+      "code": "EE335",
+      "title_en": "Electric Energy & Power Systems",
+      "title_ar": "أنظمة الطاقة والقوى الكهربائية",
+      "credits": 3,
+      "year": 3,
+      "semester": 6,
+      "spine": true,
+      "category": "systems",
+      "branch": "power",
+      "prereqs": [
+        "EE331",
+        "EE242"
+      ],
+      "unlocks": [
+        "EE480",
+        "EE481",
+        "EE482",
+        "EE336",
+        "EE495"
+      ],
+      "pitch_ar": "كن المهندس الذي يبقي النور مضيئاً لبلد كامل — ويبني شبكة الطاقة الشمسية والرياح للمستقبل.",
+      "pitch_en": "Become the engineer who keeps the lights on for a whole country.",
+      "skills_ar": [
+        "تحليل شبكة القوى",
+        "التصميم بالمحولات والمحركات",
+        "دمج الطاقة المتجددة"
+      ],
+      "vr_pattern": "P6_photo",
+      "photo_ar": "محطة طاقة شمسية",
+      "photo_query": "Ivanpah Solar Power Facility Online.jpg",
+      "question": {
+        "stem_ar": "أي مهنة يقودك إليها إتقان أنظمة القوى؟",
+        "stem_en": "Which career does mastering Power Systems point you toward?",
+        "options_ar": [
+          "الطاقة المتجددة والشبكة",
+          "المحاسبة",
+          "الترجمة",
+          "الطبخ"
+        ],
+        "options_en": [
+          "renewable energy & the grid",
+          "accounting",
+          "translation",
+          "cooking"
+        ],
+        "answer": 0,
+        "why_ar": "هذه هي بوابة غرفة الطاقة المتجددة — مكافأتك."
+      }
+    },
+    {
+      "code": "EE332",
+      "title_en": "Communication Systems Fundamentals",
+      "title_ar": "أساسيات أنظمة الاتصالات",
+      "credits": 3,
+      "year": 3,
+      "semester": 6,
+      "spine": true,
+      "category": "systems",
+      "branch": "comms",
+      "prereqs": [
+        "EE330",
+        "ENGR340"
+      ],
+      "unlocks": [
+        "EE486",
+        "EE487",
+        "EE488",
+        "EE333"
+      ],
+      "pitch_ar": "كيف يركب صوتك على موجة راديو ويصل إلى شخص عبر الكوكب في جزء من الثانية.",
+      "pitch_en": "How your voice fits onto a radio wave and reaches someone across the planet.",
+      "skills_ar": [
+        "ترميز المعلومات على موجة",
+        "مقاومة الضجيج",
+        "كيف يتشارك الملايين الأثير"
+      ],
+      "vr_pattern": "P2_wire",
+      "question": {
+        "stem_ar": "الاتصالات هي رأس أي مسار تخصصي؟",
+        "stem_en": "Communications is the head of which specialization track?",
+        "options_ar": [
+          "اللاسلكي والاتصالات",
+          "القوى",
+          "المواد",
+          "الميكانيكا"
+        ],
+        "options_en": [
+          "wireless / telecom",
+          "power",
+          "materials",
+          "mechanics"
+        ],
+        "answer": 0,
+        "why_ar": "منها ينبت فرع الاتصالات كله."
+      }
+    },
+    {
+      "code": "EE233",
+      "title_en": "Microprocessors",
+      "title_ar": "المعالجات الدقيقة",
+      "credits": 3,
+      "year": 3,
+      "semester": 5,
+      "spine": true,
+      "category": "systems",
+      "branch": "control",
+      "prereqs": [
+        "EE231",
+        "CS204"
+      ],
+      "unlocks": [
+        "EE429",
+        "EE434"
+      ],
+      "pitch_ar": "برمج الحاسوب الصغير المخبأ داخل الميكروويف والدرون والسيارة — حتى التعليمات الخام.",
+      "pitch_en": "Program the tiny computer hidden inside a microwave, a drone, or a car.",
+      "skills_ar": [
+        "برمجة العتاد مباشرة",
+        "تصميم الأنظمة المدمجة",
+        "الجسر بين البرمجيات والدوائر"
+      ],
+      "vr_pattern": "P3_nodes",
+      "question": {
+        "stem_ar": "المعالجات الدقيقة تحوّل المنطق الرقمي إلى ____ يمكن برمجته.",
+        "stem_en": "Microprocessors turns digital logic into a ____ you can program.",
+        "options_ar": [
+          "حاسوب",
+          "محرك",
+          "بطارية",
+          "هوائي"
+        ],
+        "options_en": [
+          "computer",
+          "motor",
+          "battery",
+          "antenna"
+        ],
+        "answer": 0,
+        "why_ar": "هنا يصبح المنطق حاسوباً قابلاً للبرمجة."
+      }
+    },
+    {
+      "code": "EE430",
+      "title_en": "Analogue Control Systems",
+      "title_ar": "أنظمة التحكم التماثلية",
+      "credits": 3,
+      "year": 4,
+      "semester": 7,
+      "spine": true,
+      "category": "systems",
+      "branch": "control",
+      "prereqs": [
+        "EE330"
+      ],
+      "unlocks": [
+        "EE483",
+        "EE485",
+        "EE431"
+      ],
+      "pitch_ar": "المهارة الخفية وراء الروبوتات المتوازنة والسيارات ذاتية القيادة — تعليم الآلة أن تصحّح أخطاءها لحظياً.",
+      "pitch_en": "The invisible skill behind self-balancing robots and self-driving cars.",
+      "skills_ar": [
+        "تصميم نظام يصحّح خطأه",
+        "ضمان الاستقرار",
+        "ضبط الاستجابة"
+      ],
+      "vr_pattern": "P7_plot",
+      "question": {
+        "stem_ar": "التحكم هو المهارة وراء أي تقنية؟",
+        "stem_en": "Control is the skill behind which technology?",
+        "options_ar": [
+          "الروبوتات المتوازنة والسيارات ذاتية القيادة",
+          "الطلاء",
+          "الزجاج",
+          "الورق"
+        ],
+        "options_en": [
+          "self-balancing robots / self-driving cars",
+          "paint",
+          "glass",
+          "paper"
+        ],
+        "answer": 0,
+        "why_ar": "التغذية الراجعة تصحّح الخطأ لحظياً."
+      }
+    },
+    {
+      "code": "EE495",
+      "title_en": "Senior Design I",
+      "title_ar": "مشروع التخرج ١",
+      "credits": 2,
+      "year": 4,
+      "semester": 7,
+      "spine": true,
+      "category": "capstone",
+      "prereqs": [
+        "EE335",
+        "ENGR307",
+        "ENG137"
+      ],
+      "unlocks": [
+        "EE496"
+      ],
+      "pitch_ar": "كل ما تعلّمته موجّهاً نحو مشروع حقيقي واحد تصمّمه وتبنيه — برهانك أنك مهندس.",
+      "pitch_en": "Everything you've learned, aimed at one real project you design and build.",
+      "skills_ar": [
+        "تحويل المعرفة إلى منتج",
+        "العمل الجماعي",
+        "إدارة المشاريع"
+      ],
+      "vr_pattern": "P8_build",
+      "question": {
+        "stem_ar": "مشروع التخرج موجود لكي ____ قبل أن تتخرّج.",
+        "stem_en": "Senior Design exists to make you ____ before you graduate.",
+        "options_ar": [
+          "تبني نظاماً حقيقياً كمحترف",
+          "تحفظ معادلات",
+          "تؤدي امتحانات أكثر",
+          "تبدأ من جديد"
+        ],
+        "options_en": [
+          "build a real system like a professional",
+          "memorize formulas",
+          "take more exams",
+          "start over"
+        ],
+        "answer": 0,
+        "why_ar": "إنه بروفة المهنة القادمة."
+      }
+    },
+    {
+      "code": "EE496",
+      "title_en": "Senior Design II",
+      "title_ar": "مشروع التخرج ٢",
+      "credits": 2,
+      "year": 4,
+      "semester": 8,
+      "spine": true,
+      "category": "capstone",
+      "prereqs": [
+        "EE495"
+      ],
+      "unlocks": [],
+      "pitch_ar": "اعبر المنصّة. أنت الآن مهندس كهربائي — اذهب واصنع طاقة المستقبل.",
+      "pitch_en": "Cross the stage. You're an electrical engineer now — go power the future.",
+      "skills_ar": [
+        "التنفيذ والاختبار",
+        "الدفاع عن المشروع",
+        "التواصل المهني"
+      ],
+      "vr_pattern": "P8_build",
+      "question": {
+        "stem_ar": "إتمام مشروع التخرج ٢ يعني أنك الآن ____.",
+        "stem_en": "Completing Senior Design II means you are now ____.",
+        "options_ar": [
+          "مهندس كهربائي",
+          "طالب مستجد",
+          "متردد",
+          "في إجازة"
+        ],
+        "options_en": [
+          "an electrical engineer",
+          "a freshman",
+          "undecided",
+          "on a break"
+        ],
+        "answer": 0,
+        "why_ar": "هذا هو مشغّل التخرّج ← غرفة المهنة."
+      }
+    }
+  ],
+  "optional_courses": [
+    {
+      "code": "MATH240",
+      "title_en": "Differential Equations",
+      "title_ar": "المعادلات التفاضلية",
+      "year": 2,
+      "semester": 3,
+      "pitch_ar": "المعادلات التي تصف كيف تتطوّر الدوائر والأنظمة عبر الزمن.",
+      "unlocks": [
+        "EE330"
+      ]
+    },
+    {
+      "code": "MATH244",
+      "title_en": "Multivariate Calculus",
+      "title_ar": "تفاضل وتكامل متعدد المتغيّرات",
+      "year": 2,
+      "semester": 3,
+      "pitch_ar": "التفاضل في الفضاء ثلاثي الأبعاد — رياضيات المجالات.",
+      "unlocks": [
+        "EE331"
+      ]
+    },
+    {
+      "code": "MATH215",
+      "title_en": "Math for EE",
+      "title_ar": "رياضيات للهندسة الكهربائية",
+      "year": 2,
+      "semester": 4,
+      "pitch_ar": "الأعداد المركّبة والجبر الخطي — اللغة اليومية للتيار المتردد والإشارات.",
+      "unlocks": [
+        "EE330",
+        "ENGR340"
+      ]
+    },
+    {
+      "code": "CS204",
+      "title_en": "Engineering Programming",
+      "title_ar": "البرمجة الهندسية",
+      "year": 2,
+      "semester": 4,
+      "pitch_ar": "المهندسون يؤتمتون ويحاكون؛ البرمجة أداة أساسية.",
+      "unlocks": [
+        "EE233",
+        "ENGR310"
+      ]
+    },
+    {
+      "code": "EE244",
+      "title_en": "Electronics II",
+      "title_ar": "إلكترونيات ٢",
+      "year": 3,
+      "semester": 5,
+      "pitch_ar": "المضخّمات التشغيلية والدوائر المتكاملة — قلب كل جهاز تماثلي.",
+      "unlocks": [
+        "EE482",
+        "EE487"
+      ]
+    },
+    {
+      "code": "ENGR340",
+      "title_en": "Probability & Random Processes",
+      "title_ar": "الاحتمالات والعمليات العشوائية",
+      "year": 3,
+      "semester": 5,
+      "pitch_ar": "الإشارات والضجيج الحقيقية عشوائية؛ هكذا تتعامل مع اللايقين.",
+      "unlocks": [
+        "EE332"
+      ]
+    },
+    {
+      "code": "EE336",
+      "title_en": "Power Systems Lab",
+      "title_ar": "مختبر أنظمة القوى",
+      "year": 3,
+      "semester": 6,
+      "pitch_ar": "حيث تلمس المحولات والمحركات وخطوط النقل بيديك.",
+      "unlocks": []
+    },
+    {
+      "code": "ENGR310",
+      "title_en": "Numerical Methods",
+      "title_ar": "الطرق العددية",
+      "year": 3,
+      "semester": 6,
+      "pitch_ar": "حين تصعب المعادلات، تقرّبها الحواسيب — هكذا تعمل المحاكاة.",
+      "unlocks": [
+        "EE434"
+      ]
+    },
+    {
+      "code": "ENGR307",
+      "title_en": "Engineering Economics",
+      "title_ar": "الاقتصاد الهندسي",
+      "year": 3,
+      "semester": 6,
+      "pitch_ar": "المهارات التي تحوّل المهندس إلى قائد مشروع.",
+      "unlocks": [
+        "EE495"
+      ]
+    },
+    {
+      "code": "ENGR399",
+      "title_en": "Engineering Training",
+      "title_ar": "التدريب الهندسي",
+      "year": 3,
+      "semester": 0,
+      "pitch_ar": "ثمانية أسابيع داخل شركة حقيقية — أول مذاق للمهنة.",
+      "unlocks": []
+    },
+    {
+      "code": "EE429",
+      "title_en": "Mechatronics",
+      "title_ar": "الميكاترونكس",
+      "year": 4,
+      "semester": 7,
+      "pitch_ar": "دمج الكهرباء والميكانيكا والحوسبة في نظام واحد ذكي.",
+      "unlocks": []
+    },
+    {
+      "code": "EE434",
+      "title_en": "Digital Systems & Signal Processing",
+      "title_ar": "الأنظمة الرقمية ومعالجة الإشارات",
+      "year": 4,
+      "semester": 7,
+      "pitch_ar": "معالجة الإشارات الرقمية — قلب الصوت والصورة الحديثين.",
+      "unlocks": []
+    }
+  ],
+  "elective_tracks": [
+    {
+      "id": "power",
+      "name_ar": "⚡ مسار الطاقة والقوى",
+      "name_en": "Power",
+      "status": "live",
+      "reward_room": "renewable_energy",
+      "pitch_ar": "صمّم المحركات والشبكات والمحوّلات التي تُكهرب العالم — ومستقبله المتجدّد.",
+      "courses": [
+        {
+          "code": "EE480",
+          "title_ar": "الآلات الكهربائية"
+        },
+        {
+          "code": "EE481",
+          "title_ar": "أنظمة القوى"
+        },
+        {
+          "code": "EE482",
+          "title_ar": "إلكترونيات القوى"
+        }
+      ]
+    },
+    {
+      "id": "control",
+      "name_ar": "🎛️ مسار التحكم والأتمتة",
+      "name_en": "Control",
+      "status": "coming_soon",
+      "pitch_ar": "اجعل الآلات والمصانع تشتغل من تلقاء نفسها.",
+      "courses": [
+        {
+          "code": "EE483",
+          "title_ar": "أنظمة التحكم الحديثة"
+        },
+        {
+          "code": "EE485",
+          "title_ar": "أنظمة التحكم الرقمية"
+        },
+        {
+          "code": "EE484",
+          "title_ar": "أنظمة التحكم الصناعية"
+        }
+      ]
+    },
+    {
+      "id": "comms",
+      "name_ar": "📡 مسار الاتصالات",
+      "name_en": "Communications",
+      "status": "coming_soon",
+      "pitch_ar": "ابنِ شبكات الجيل الخامس والأقمار والألياف التي يعمل عليها العالم كله.",
+      "courses": [
+        {
+          "code": "EE486",
+          "title_ar": "أنظمة الاتصالات الرقمية"
+        },
+        {
+          "code": "EE488",
+          "title_ar": "الاتصالات اللاسلكية والخلوية"
+        },
+        {
+          "code": "EE493",
+          "title_ar": "اتصالات الألياف الضوئية"
+        }
+      ]
+    }
+  ]
+}

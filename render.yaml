@@ -1,0 +1,16 @@
+# نشر بضغطة واحدة على Render.com — يعطي رابط HTTPS يعمل على نظارة Quest
+# من أي شبكة، مع بقاء كل الوظائف (سعود عبر Groq، بيانات المعروضات، وسيط
+# صور الجدران). بعد الربط بمستودع GitHub اضبط GROQ_API_KEY من لوحة Render
+# (لا تضعه في المستودع أبداً).
+services:
+  - type: web
+    name: futurecareerxr
+    runtime: python
+    plan: free
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: cd backend && gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false   # يُضبط يدوياً من لوحة تحكم Render (سرّي)
+      - key: PYTHON_VERSION
+        value: 3.11.9

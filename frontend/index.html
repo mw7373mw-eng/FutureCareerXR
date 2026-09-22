@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<!-- الصفحة بالكامل بالعربية وباتجاه من اليمين إلى اليسار (RTL) -->
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fututor VR — معرض المهن الافتراضي</title>
+  <link rel="stylesheet" href="style.css?v=20260809" />
+  <!-- خطوط جوجل: "Cairo" للعناوين و"Tajawal" للنصوص — خطان عربيان أنيقان
+       يدعمان التشكيل الكامل ويناسبان الطابع المستقبلي للمشروع -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="journey.css?v=20260809" />
+</head>
+<body>
+
+  <!-- =========================================================
+       شاشة التحميل
+       تظهر أولاً أثناء تهيئة أصول Three.js
+       ========================================================= -->
+  <div id="loading-screen">
+    <div class="loading-logo">
+      <span class="logo-bracket">[</span>
+      <span class="logo-text">Fututor <strong>VR</strong></span>
+      <span class="logo-bracket">]</span>
+    </div>
+    <div class="loading-bar-track">
+      <div id="loading-bar-fill"></div>
+    </div>
+    <div id="loading-status">جارٍ تهيئة المعرض...</div>
+  </div>
+
+  <!-- =========================================================
+       واجهة العرض (HUD) — تُرسم فوق لوحة Three.js
+       ========================================================= -->
+  <div id="hud" class="hidden">
+    <div id="hud-top">
+      <div id="hud-logo">Fututor <strong>VR</strong></div>
+      <div id="hud-room-label">البهو الرئيسي</div>
+    </div>
+
+    <div id="hud-crosshair"></div>
+
+    <!-- تلميحات التحكم -->
+    <div id="hud-controls-hint">
+      <span><strong>W A S D</strong> للحركة</span>
+      <span><strong>الفأرة</strong> للنظر حولك</span>
+      <span><strong>النقر</strong> للتفاعل / لسؤال سعود</span>
+      <span><strong>Esc</strong> لتحرير المؤشر</span>
+    </div>
+
+    <button id="mute-btn" title="تشغيل / كتم الصوت">🔊</button>
+    <button id="exit-room-btn" title="العودة إلى البهو الرئيسي (يعمل من أي مكان)">🚪 العودة للبهو</button>
+  </div>
+
+  <!-- شاشة البدء (ضرورية لتفعيل قفل المؤشر والصوت بنقرة من المستخدم) -->
+  <div id="start-overlay" class="hidden">
+    <div class="start-card">
+      <h1>مرحباً بك في <span>Fututor VR</span></h1>
+      <p>ادخل إلى بهو المعرض وتعرّف على «سعود»، مساعدك الذكي للإرشاد المهني.
+         استكشف غرفة هندسة الطاقة المتجددة وغرفة «الهندسة الكهربائية كطالب» واكتشف مسارك.</p>
+      <button id="start-journey-btn">🎓 ابدأ الرحلة الجامعية</button>
+      <button id="start-btn" class="start-secondary">ادخل المعرض مباشرة</button>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       لوحة المساعد الذكي للإرشاد المهني («سعود»)
+       ========================================================= -->
+  <div id="aria-panel" class="hidden">
+    <div id="aria-hologram">
+      <div class="aria-core"></div>
+      <div class="aria-ring ring-1"></div>
+      <div class="aria-ring ring-2"></div>
+      <div class="aria-ring ring-3"></div>
+    </div>
+    <div id="aria-dialogue-box">
+      <div id="aria-name">سعود <span id="aria-mode-badge">الوضع المحلي</span></div>
+      <div id="aria-bubble">
+        <p id="aria-text">أهلاً بك أيها الزائر! أنا «سعود»، مساعدك الذكي للإرشاد المهني.</p>
+      </div>
+      <div id="aria-options"></div>
+      <div id="aria-chat-input-row" class="hidden">
+        <input id="aria-chat-input" type="text" placeholder="اسأل سعود عن أي معروض أو تخصص..." autocomplete="off" />
+        <button id="aria-chat-send-btn" title="إرسال">إرسال ➤</button>
+      </div>
+    </div>
+    <button id="aria-speak-btn" title="استمع إلى إجابة سعود" hidden>🔊</button>
+      <button id="aria-close-btn" title="تصغير سعود">–</button>
+  </div>
+
+  <button id="aria-reopen-btn" class="hidden" title="تحدث مع سعود">💬 سعود</button>
+
+  <!-- =========================================================
+       نافذة نتيجة التوصية المهنية
+       ========================================================= -->
+  <div id="recommendation-modal" class="modal hidden">
+    <div class="modal-content recommendation-content">
+      <button class="modal-close" data-close="recommendation-modal">✕</button>
+      <div class="rec-badge">التوصية المهنية</div>
+      <h2 id="rec-title">المسار المهني المناسب لك</h2>
+      <p id="rec-reasoning"></p>
+      <!-- نسب التوافق المئوية للمسارات الثلاثة (البوصلة المهنية) -->
+      <div id="rec-matches"></div>
+      <div class="rec-columns">
+        <div>
+          <h3>التخصصات الجامعية المقترحة</h3>
+          <ul id="rec-majors"></ul>
+        </div>
+        <div>
+          <h3>المهارات المفيدة</h3>
+          <ul id="rec-skills"></ul>
+        </div>
+        <div class="rec-col">
+          <h4>🎓 أفضل الجامعات السعودية</h4>
+          <ul id="rec-universities"></ul>
+        </div>
+      </div>
+
+      <!-- إحصاءات المسار الموصى به: وظائف ورواتب + شركات + مناطق (تُبنى من career_ai.js) -->
+      <div id="rec-stats"></div>
+      <button id="rec-goto-room-btn" class="primary-btn">ادخل إلى هذه الغرفة</button>
+      <button id="rec-explore-btn" class="secondary-btn">استكشف بحرية</button>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       نافذة معلومات الجسم التفاعلي (عند النقر على معروضات الغرف)
+       ========================================================= -->
+  <div id="object-modal" class="modal hidden">
+    <div class="modal-content object-content">
+      <button class="modal-close" data-close="object-modal">✕</button>
+      <div class="object-modal-media">
+        <!-- معرض صور تلقائي (4 صور لكل معروض) — تُبنى الشرائح من سجل
+             الأصول (OBJECT_GALLERIES في assets.js) عند فتح البطاقة فقط،
+             مع تحميل كسول (lazy) وتخزين مؤقت للصور. -->
+        <div id="object-gallery">
+          <img id="object-modal-image" src="" alt="" />
+          <img id="object-modal-image-next" src="" alt="" aria-hidden="true" />
+          <div id="object-gallery-caption"></div>
+          <button id="gallery-prev-btn" class="gallery-nav" title="الصورة السابقة">›</button>
+          <button id="gallery-next-btn" class="gallery-nav" title="الصورة التالية">‹</button>
+          <button id="gallery-play-btn" class="gallery-play" title="إيقاف مؤقت للعرض التلقائي">⏸</button>
+          <div id="object-gallery-dots"></div>
+        </div>
+        <div class="video-placeholder">
+          <div class="play-icon">▶</div>
+          <span>موضع فيديو توضيحي — ضع ملف .mp4 حقيقياً في assets/videos لاستبداله</span>
+        </div>
+      </div>
+      <div class="object-modal-body">
+        <div class="object-eyebrow" id="object-modal-room"></div>
+        <h2 id="object-modal-title"></h2>
+
+        <!-- قراءة الوصف العربي بصوت مسموع (Web Speech API) — يقرأ النص
+             المعروض نفسه، ويُظلّل الجملة الجاري نطقها. -->
+        <div id="narration-bar">
+          <button id="narrate-btn" class="narrate-main-btn">🔊 استمع إلى الوصف</button>
+          <button id="narrate-pause-btn" class="narrate-ctrl-btn" hidden>⏸ إيقاف مؤقت</button>
+          <button id="narrate-resume-btn" class="narrate-ctrl-btn" hidden>▶ متابعة</button>
+          <button id="narrate-stop-btn" class="narrate-ctrl-btn" hidden>⏹ إيقاف</button>
+          <span id="narration-status"></span>
+        </div>
+
+        <div class="object-section">
+          <h4>الغرض</h4>
+          <p id="object-modal-purpose"></p>
+        </div>
+        <div class="object-section">
+          <h4>كيف يعمل</h4>
+          <p id="object-modal-how"></p>
+        </div>
+        <!-- قسم جديد: التطبيقات الواقعية للجهاز/التقنية -->
+        <div class="object-section" id="object-modal-applications-section">
+          <h4>التطبيقات الواقعية</h4>
+          <p id="object-modal-applications"></p>
+        </div>
+        <div class="object-section">
+          <h4>التطورات المستقبلية</h4>
+          <p id="object-modal-future"></p>
+        </div>
+        <div class="object-section">
+          <h4>الفرص المهنية</h4>
+          <div id="object-modal-careers" class="pill-row"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       نافذة «الرؤية المستقبلية» (لكل غرفة)
+       ========================================================= -->
+  <div id="perspective-modal" class="modal hidden">
+    <div class="modal-content perspective-content">
+      <button class="modal-close" data-close="perspective-modal">✕</button>
+      <div class="object-eyebrow">الرؤية المستقبلية</div>
+      <h2 id="perspective-title"></h2>
+      <ul id="perspective-points"></ul>
+      <div id="perspective-universities-section">
+        <h3>أفضل الجامعات السعودية لهذا التخصص</h3>
+        <div id="perspective-universities"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       نقطة تثبيت لوحة Three.js
+       ========================================================= -->
+  <div id="scene-container"></div>
+
+  <!-- =========================================================
+       أصوات (اختيارية) — ضع الملفات الحقيقية في assets/audio
+       يتم تجاهل أخطاء التحميل بأمان في script.js
+       ========================================================= -->
+  <audio id="sfx-ambient" loop preload="none" src="assets/audio/ambient.mp3"></audio>
+  <audio id="sfx-click" preload="none" src="assets/audio/click.mp3"></audio>
+  <audio id="sfx-door" preload="none" src="assets/audio/door.mp3"></audio>
+
+  <!-- =========================================================
+       المكتبات (Three.js عبر CDN — لا حاجة لتثبيت محلي)
+       ========================================================= -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+
+  <!-- سكربتات التطبيق (وحدات ES6) -->
+  <script type="module" src="career_ai.js"></script>
+  <script src="journey.js?v=20260809"></script>
+  <script type="module" src="script.js?v=20260922"></script>
+</body>
+</html>

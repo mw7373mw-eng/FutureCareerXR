@@ -1,0 +1,24 @@
+# أسرار — لا يُرفع مطلقاً
+backend/.env
+
+# ملفات بايثون المؤقتة
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# ملفات النظام
+.DS_Store
+Thumbs.db
+
+# ذاكرة صور الجدران المؤقتة (تُبنى تلقائياً)
+backend/image_cache/
+backend/tts_cache/
+
+# شهادة HTTPS المحلية (تُنشأ تلقائياً لكل جهاز)
+backend/vr_cert.pem
+backend/vr_key.pem
+backend/vr_cert.ip
+
+# أحداث الرحلة الجامعية (بيانات محلية)
+backend/journey_events.jsonl
